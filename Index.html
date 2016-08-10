@@ -1,0 +1,188 @@
+<html >
+    <head>
+        <title>ES6 POC</title>
+        <script src="Model/Person.js"></script>
+        <script src="Services/PersonServices.js"></script>
+
+        <script src="lib/jquery-2.2.3.min.js"></script>
+        <script src="lib/bootstrap.min.js"></script>
+
+        <script src="lib/angular.min.js"></script>
+        <script src="lib/app.js"></script>
+        <script src="Controller/PersonController.js"></script>
+        
+        <link href="lib/bootstrap.css" rel="stylesheet"/>
+        <link href="lib/bootstrap-theme.min.css" rel="stylesheet"/>
+        <link href="lib/Site.css" rel="stylesheet"/>
+    </head>
+    <body ng-app="sample">
+            
+        <div class="container">
+            <div class="navbar-header">
+       <div ng-controller="PersonController">
+        <h2 class="col-lg-12">Persons</h2>
+
+        <p class="col-lg-12" ng-hide="divAdd">
+            <button class="btn btn-primary" ng-click="AddCancelNewPerson()">Create New Person</button>
+        </p>
+
+        <div ng-show="divAdd" class="ng-hide">
+        <h2 class="col-lg-12">Create new Person</h2>
+        <form name="formPersons" role="form" novalidate >
+            <div class="row">
+                <div class="form-group">
+                    <label for="FirstName" class="col-md-4 control-label">first name</label>
+                    <div class="col-md-12 col-xs-12">
+                        <input type="text" ng-model="FirstName" id="FirstName" name="FirstName" class="form-control" maxlength="50" ng-required="true" />
+                        <div ng-show="formPersons.$submitted || formPersons.FirstName.$dirty || IsNameExists" class="ng-hide">
+                            <small id="txtName" class="col-md-12 text-danger bg-danger" ng-show="formPersons.FirstName.$error.required">Please enter first name</small>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="LastName" class="col-md-4 control-label">last name</label>
+                    <div class="col-md-12 col-xs-12">
+                        <input type="text" ng-model="LastName" id="LastName" name="LastName" class="form-control" maxlength="50" ng-required="true" />
+                        <div ng-show="formPersons.$submitted || formPersons.LastName.$dirty || IsNameExists" class="ng-hide">
+                            <small id="txtName" class="col-md-12 text-danger bg-danger" ng-show="formPersons.LastName.$error.required">Please enter last name</small>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="Cost" class="col-md-4 control-label">Cost</label>
+                    <div class="col-md-12 col-xs-12">
+                        <input type="text" ng-model="Cost" id="Cost" name="Cost" class="form-control" maxlength="50" ng-required="true" />
+                        <div ng-show="formPersons.$submitted || formPersons.Cost.$dirty" class="ng-hide">
+                            <small id="txtCost" class="col-md-12 text-danger bg-danger" ng-show="formPersons.Cost.$error.required">Please enter Cost</small>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="Budget" class="col-md-4 control-label">Budget</label>
+                    <div class="col-md-12 col-xs-12">
+                        <input type="text" ng-model="Budget" id="Budget" name="Budget" class="form-control" maxlength="50" ng-required="true" />
+                        <div ng-show="formPersons.$submitted || formPersons.Budget.$dirty" class="ng-hide">
+                            <small id="txtBudget" class="col-md-12 text-danger bg-danger" ng-show="formPersons.Budget.$error.required">Please enter Budget</small>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <button class="btn btn-primary pull-right" ng-click="AddCancelNewPerson()">Cancel</button>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="submit" value="Create" class="btn btn-primary pull-left" ng-click="AddPerson();"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+</div>
+
+        <div class="col-lg-12">
+            <table class="table table-striped ng-hide" ng-hide="PersonList==null || PersonList.length==0">
+                <thead>
+                    <tr>
+                        <th class="col-lg-2">
+                            First name
+                        </th>
+                        <th class="col-lg-2">
+                            last name
+                        </th>
+                        <th class="col-lg-2">
+                            full name
+                        </th>
+                        <th class="col-lg-1">
+                            cost
+                        </th>
+                        <th class="col-lg-1">
+                            budget
+                        </th>
+                        <th class="col-lg-1">
+                            remaining
+                        </th>
+                        <th class="col-lg-3"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="data in PersonList">
+                        <td>
+                            <div class="row OverrideMargin">
+                                <span ng-hide="data.IsEditable">{{data.firstName}}</span>
+                                <input type="text" ng-show="data.IsEditable" maxlength="50" ng-model="data.firstName" class="ng-hide"  />
+                            </div>
+                            <div class="row OverrideMargin">
+                                <small id="txtFirstName" class="text-danger bg-danger ng-hide" ng-show="data.firstName==undefined || data.firstName==null ||data.firstName==''">Please enter FirstName</small>
+                                
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row OverrideMargin">
+                                <span ng-hide="data.IsEditable">{{data.lastName}}</span>
+                                <input type="text" ng-show="data.IsEditable" maxlength="50" ng-model="data.lastName" class="ng-hide"/>
+                            </div>
+                            <div class="row OverrideMargin">
+                                <small id="txtLastName" class="text-danger bg-danger ng-hide" ng-show="data.lastName==undefined || data.lastName==null ||data.lastName==''">Please enter LastName</small>
+                                
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row OverrideMargin">
+                                <span >{{data.fullName}}</span>
+                            </div>
+                                                    </td>
+                        <td>
+                            <div class="row OverrideMargin">
+                                <span ng-hide="data.IsEditable">{{data.cost}}</span>
+                                <input type="text" ng-show="data.IsEditable" maxlength="50" ng-model="data.cost" class="ng-hide" />
+                            </div>
+                            <div class="row OverrideMargin">
+                                <small id="txtName" class="text-danger bg-danger ng-hide" ng-show="data.cost==undefined || data.cost==null ||data.cost==''">Please enter cost</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row OverrideMargin">
+                                <span ng-hide="data.IsEditable">{{data.budget}}</span>
+                                <input type="text" ng-show="data.IsEditable" maxlength="50" ng-model="data.budget" class="ng-hide"/>
+                            </div>
+                            <div class="row OverrideMargin">
+                                <small id="txtName" class="text-danger bg-danger ng-hide" ng-show="data.budget==undefined || data.budget==null ||data.budget==''">Please enter budget</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row OverrideMargin">
+                                <span >{{data.remainingBudget}}</span>
+                                
+                            </div>                        </td>
+                        <td>
+                            <div class="row OverrideMargin">
+                                <div class="col-lg-4">
+                                <a ng-click="UpdatePerson(data);" ng-hide="data.IsEditable" class="btn btn-primary pull-right">Edit</a>
+                                    <a ng-click="SavePerson(data);" ng-show="data.IsEditable" class="btn btn-primary pull-right">Save</a>
+                                </div>
+                                <div class="col-lg-4">
+                                    <a ng-click="DeletePerson(data);" ng-hide="data.IsEditable" class="btn btn-primary pull-right">Delete</a>
+                                    <a ng-click="Cancel(data);" ng-show="data.IsEditable" class="btn btn-primary pull-right">Cancel</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+                </div>
+        </div>
+    </body>
+</html>
